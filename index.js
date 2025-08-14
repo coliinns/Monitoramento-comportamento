@@ -1,25 +1,17 @@
 require("dotenv").config();
+const { Client, GatewayIntentBits } = require("discord.js");
+
 console.log("TOKEN detectado? ", process.env.TOKEN ? "SIM" : "NÃO");
 
-const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
-const cron = require("node-cron");
-const express = require("express");
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
-});
-
-client.once("ready", () => {
+client.on("ready", () => {
   console.log(`✅ Bot online como ${client.user.tag}`);
 });
 
-client.on("error", (err) => console.error("❌ Erro no cliente Discord:", err));
-client.on("warn", (warn) => console.warn("⚠️ Aviso do cliente Discord:", warn));
-
 client.login(process.env.TOKEN)
   .then(() => console.log("🔄 Tentando logar no Discord..."))
-  .catch((err) => {
-    console.error("❌ Falha no login do Discord:", err);
+  .catch(err => console.error("❌ Falha no login:", err));
     process.exit(1);
   });
 
