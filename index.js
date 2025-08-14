@@ -1,4 +1,7 @@
 require("dotenv").config();
+
+console.log("TOKEN detectado? ", process.env.TOKEN ? "SIM" : "NÃO");
+
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
 const cron = require("node-cron");
 const express = require("express");
