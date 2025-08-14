@@ -1,13 +1,34 @@
+// =========================
 // Importações
+// =========================
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
 const cron = require("node-cron");
+const express = require("express"); // Adicionado para servidor web
 
+// =========================
 // Criar cliente do Discord
+// =========================
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
 });
 
+// =========================
+// Servidor web para UptimeRobot
+// =========================
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Bot está ativo! ✅");
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🌐 Servidor web rodando na porta ${PORT}`);
+});
+
+// =========================
 // Quando o bot estiver online
+// =========================
 client.once("ready", () => {
   console.log(`✅ Bot online como ${client.user.tag}`);
 
@@ -34,5 +55,7 @@ client.once("ready", () => {
   });
 });
 
-// Login do bot usando variável de ambiente
+// =========================
+// Login do bot
+// =========================
 client.login(process.env.TOKEN);
