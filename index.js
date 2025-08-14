@@ -3,7 +3,7 @@
 // =========================
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
 const cron = require("node-cron");
-const express = require("express"); // Adicionado para servidor web
+const express = require("express");
 
 // =========================
 // Criar cliente do Discord
@@ -33,29 +33,46 @@ client.once("ready", () => {
   console.log(`✅ Bot online como ${client.user.tag}`);
 
   // Agendar mensagem todo dia às 00:00
-  cron.schedule("0 0 * * *", async () => {
-    try {
-      const channel = await client.channels.fetch(process.env.CHANNEL_ID);
-      if (!channel) return console.log("Canal não encontrado.");
+  cron.schedule(
+    "0 0 * * *",
+    async () => {
+      try {
+        const channel = await client.channels.fetch(process.env.CHANNEL_ID);
+        if (!channel) return console.log("⚠️ Canal não encontrado.");
 
-      // Criar Embed
-      const embed = new EmbedBuilder()
-        .setColor("#FFEC00")
-        .setDescription(
-          `Siga as regras, mantenha o respeito e a humildade. Suas palavras são monitoradas constantemente por todos os participantes da comunidade, evite denúncias e banimento.\n\nQualquer ocorrência abra um Ticket no canal <#1360720462518157514>`
-        );
+        // Criar Embed
+        const embed = new EmbedBuilder()
+          .setColor("#FFEC00")
+          .setDescription(
+            `Siga as regras, mantenha o respeito e a humildade. Suas palavras são monitoradas constantemente por todos os participantes da comunidade, evite denúncias e banimento.\n\nQualquer ocorrência abra um Ticket no canal <#1360720462518157514>`
+          );
 
-      await channel.send({ embeds: [embed] });
-      console.log("📨 Mensagem enviada com sucesso!");
-    } catch (error) {
-      console.error("Erro ao enviar a mensagem:", error);
-    }
-  }, {
-    timezone: "America/Sao_Paulo"
-  });
+        await channel.send({ embeds: [embed] });
+        console.log("📨 Mensagem enviada com sucesso!");
+      } catch (error) {
+        console.error("❌ Erro ao enviar a mensagem:", error);
+      }
+    },
+    { timezone: "America/Sao_Paulo" }
+  );
 });
 
 // =========================
-// Login do bot
+// Login do bot com tratamento de erro
 // =========================
-client.login(process.env.TOKEN);
+if (!process.env.TOKEN) {
+  console.error("❌ TOKEN do Discord não encontrado nas variáveis de ambiente!");
+  process.exit(1);
+}
+
+client.login(process.env.TOKEN).catch((err) => {
+  console.error("❌ Falha ao logar no Discord:", err);
+  process.exit(1);
+});
+
+// =========================
+// Log para reconexões e erros
+// =========================
+client.on("error", (err) => console.error("Discord client error:", err));
+client.on("warn", (warn) => console.warn("Discord client warning:", warn));
+client.on("disconnect", (event) => console.log("Discord client desconectado:", event));
