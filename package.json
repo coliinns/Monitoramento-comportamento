@@ -1,13 +1,14 @@
 {
-  "name": "discord-embed-bot",
+  "name": "monitoramento-comportamento",
   "version": "1.0.0",
+  "description": "Bot do Discord com servidor web para UptimeRobot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "discord.js": "^14.15.1",
+    "discord.js": "^14.11.0",
     "node-cron": "^3.0.2",
-    "dotenv": "^16.3.1"
+    "express": "^4.18.2"
   }
 }
