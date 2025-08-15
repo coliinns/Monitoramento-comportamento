@@ -1,36 +1,22 @@
 require("dotenv").config();
+const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
+const cron = require("node-cron");
 const express = require("express");
-const { Client, GatewayIntentBits } = require("discord.js");
 
-// ✅ Verifica se o token existe
-console.log("TOKEN detectado? ", process.env.TOKEN ? "SIM" : "NÃO");
-
+// =========================
 // Cliente Discord
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.on("ready", () => {
-  console.log(`✅ Bot online como ${client.user.tag}`);
+// =========================
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
-// Login do bot
-if (!process.env.TOKEN) {
-  console.error("❌ TOKEN não encontrado!");
-  process.exit(1);
-}
-
-client.login(process.env.TOKEN)
-  .then(() => console.log("🔄 Tentando logar no Discord..."))
-  .catch(err => {
-    console.error("❌ Falha no login:", err);
-    process.exit(1);
-  });
-
-// Servidor Express para UptimeRobot
+// =========================
+// Servidor web para UptimeRobot
+// =========================
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => res.send("Bot está ativo! ✅"));
-
 app.listen(PORT, () => console.log(`🌐 Servidor web rodando na porta ${PORT}`));
 
 // =========================
